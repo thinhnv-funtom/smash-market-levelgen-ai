@@ -1,0 +1,19 @@
+__pycache__/
+*.pyc
+.venv/
+
+# Regenerated from the Unity project — not source of truth for this repo.
+data/catalog.json
+
+# Copied from the Unity project's prod-13 export; regenerate via export_corpus.py
+# rather than diffing 1000 files by hand. Remove this line once the team wants
+# prod13's copy tracked in this repo's own history instead.
+data/corpus/prod13/*.json
+
+# Compiled per-training-run snapshots — reproducible from manifest.jsonl + the
+# corpus dirs, not source of truth on their own.
+data/snapshots/*.jsonl
+
+# Trained weights — see README for the plain-git-vs-git-lfs decision point.
+checkpoints/*.pt
+checkpoints/*.ckpt

@@ -1,0 +1,12 @@
+[project]
+name = "levelgenai"
+version = "0.1.0"
+description = "Training pipeline for Smash Market's AI level generator"
+requires-python = ">=3.10"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"

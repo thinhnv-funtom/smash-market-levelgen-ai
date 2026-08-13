@@ -1,0 +1,4 @@
+# Phase 0 (corpus export, stats, manifest) needs only the standard library.
+# Uncomment when Phase 1/2 (tokenizer/model/train) land:
+# torch>=2.2
+# numpy>=1.26
