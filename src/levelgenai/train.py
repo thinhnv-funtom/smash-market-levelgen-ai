@@ -16,6 +16,15 @@ why (compute isn't the bottleneck here, dataset size is).
 Usage:
     python -m levelgenai.train --snapshot data/snapshots/dataset_v1.jsonl \\
         --n-layer 6 --n-head 6 --d-model 192 --max-steps 20000
+
+Saves two checkpoints every --eval-interval steps: last.pt (always, so a run
+interrupted mid-training — e.g. a Colab disconnect, see README's Colab
+section — never loses more than one eval interval) and best.pt (only on a
+new best val_loss, so it's never worse than an earlier point in the same
+run). Resume an interrupted run with --resume:
+
+    python -m levelgenai.train --snapshot data/snapshots/dataset_v1.jsonl \\
+        --resume checkpoints/last.pt --max-steps 20000
 """
 
 from __future__ import annotations
@@ -113,6 +122,8 @@ def main() -> None:
     parser.add_argument("--eval-interval", type=int, default=500)
     parser.add_argument("--val-fraction", type=float, default=0.1)
     parser.add_argument("--seed", type=int, default=0)
+    parser.add_argument("--resume", type=Path, default=None,
+                         help="Path to a last.pt/best.pt to continue from (see README's Colab section).")
     args = parser.parse_args()
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -125,16 +136,28 @@ def main() -> None:
     block_size = max(len(s) for s in (train_seqs + val_seqs)) - 1
     print(f"train: {len(train_seqs)}, val: {len(val_seqs)}, block_size: {block_size}, device: {device}")
 
-    cfg = GPTConfig(vocab_size=len(vocab), block_size=block_size, n_layer=args.n_layer,
-                     n_head=args.n_head, d_model=args.d_model, dropout=args.dropout)
-    model = GPT(cfg).to(device)
+    start_step = 0
+    best_val = float("inf")
+    if args.resume is not None:
+        checkpoint = torch.load(args.resume, map_location=device, weights_only=False)
+        cfg = checkpoint["cfg"]  # the saved architecture wins — --n-layer etc. can't change mid-run
+        model = GPT(cfg).to(device)
+        model.load_state_dict(checkpoint["model"])
+        optimizer = torch.optim.AdamW(model.parameters(), lr=args.lr)
+        optimizer.load_state_dict(checkpoint["optimizer"])
+        start_step = checkpoint["step"]
+        best_val = checkpoint.get("best_val", checkpoint.get("val_loss", float("inf")))
+        print(f"resumed from {args.resume} at step {start_step} (best_val={best_val:.4f})")
+    else:
+        cfg = GPTConfig(vocab_size=len(vocab), block_size=block_size, n_layer=args.n_layer,
+                         n_head=args.n_head, d_model=args.d_model, dropout=args.dropout)
+        model = GPT(cfg).to(device)
+        optimizer = torch.optim.AdamW(model.parameters(), lr=args.lr)
     print(f"model params: {model.num_params():,}")
-    optimizer = torch.optim.AdamW(model.parameters(), lr=args.lr)
 
     args.checkpoint_dir.mkdir(parents=True, exist_ok=True)
-    best_val = float("inf")
 
-    for step in range(1, args.max_steps + 1):
+    for step in range(start_step + 1, args.max_steps + 1):
         x, y = make_batch(train_seqs, args.batch_size, pad_id, device)
         _, loss = model(x, y)
         optimizer.zero_grad()
@@ -144,10 +167,13 @@ def main() -> None:
         if step % args.eval_interval == 0 or step == args.max_steps:
             val_loss = eval_loss(model, val_seqs, pad_id, device)
             print(f"step {step}: train_loss={loss.item():.4f} val_loss={val_loss:.4f}")
-            if val_loss < best_val:
-                best_val = val_loss
-                torch.save({"cfg": cfg, "model": model.state_dict(), "step": step, "val_loss": val_loss},
-                           args.checkpoint_dir / "best.pt")
+            best_val = min(best_val, val_loss)
+
+            checkpoint = {"cfg": cfg, "model": model.state_dict(), "optimizer": optimizer.state_dict(),
+                          "step": step, "val_loss": val_loss, "best_val": best_val}
+            torch.save(checkpoint, args.checkpoint_dir / "last.pt")  # always — see --resume
+            if val_loss == best_val:
+                torch.save(checkpoint, args.checkpoint_dir / "best.pt")  # only on improvement — see generate.py
 
     print(f"done. best val_loss={best_val:.4f}, checkpoint at {args.checkpoint_dir / 'best.pt'}")
 

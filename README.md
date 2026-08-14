@@ -166,8 +166,10 @@ python -m levelgenai.train --snapshot data/snapshots/dataset_v1.jsonl \
     --n-layer 6 --n-head 6 --d-model 192 --batch-size 16 --max-steps 20000 --eval-interval 500
 ```
 
-- Prints `train_loss`/`val_loss` every `--eval-interval` steps; only saves a checkpoint when
-  `val_loss` improves, so `checkpoints/best.pt` is always the best-seen, not just the latest.
+- Prints `train_loss`/`val_loss` every `--eval-interval` steps, and saves **two** checkpoints
+  at each of those: `checkpoints/last.pt` (always — this is what `--resume` continues from)
+  and `checkpoints/best.pt` (only on a new best `val_loss` — this is what `generate.py` should
+  point at).
 - `--lr` (default `3e-4`), `--val-fraction` (default `0.1`, stratified by difficulty — see
   `stratified_split`), `--seed` are also CLI flags if the defaults need adjusting.
 - Watch for `val_loss` climbing back up while `train_loss` keeps falling — classic
@@ -177,6 +179,10 @@ python -m levelgenai.train --snapshot data/snapshots/dataset_v1.jsonl \
 - There's no early stopping — `--max-steps` runs to completion regardless. Watch the log and
   Ctrl-C once `val_loss` has clearly stopped improving; `checkpoints/best.pt` already has the
   best checkpoint saved, so stopping early loses nothing.
+- **Interrupted?** (crash, Ctrl-C, a Colab disconnect — see below) Resume from `last.pt`
+  rather than restarting: `--resume checkpoints/last.pt` (the saved architecture wins, so
+  `--n-layer`/`--n-head`/`--d-model`/`--dropout` are ignored when resuming — only `--max-steps`
+  and similar training-schedule flags still apply).
 
 ### 6. Try generating from the checkpoint
 
@@ -195,6 +201,108 @@ yet. A rising accept rate over successive checkpoints is a much more meaningful 
 signal than loss alone, since loss doesn't distinguish "nearly right" from "structurally
 broken." Once this looks reasonable, point `Tools > Smash Market > AI Level Generator` at
 the same `--checkpoint` path from Unity — see `Doc/AILevelGenerator.md` in the main repo.
+
+## Training on Google Colab
+
+Same steps as above, just run as notebook cells instead of a local shell — plus two
+Colab-specific problems neither of which show up on a persistent machine: **the VM's local
+disk is wiped every time the runtime disconnects**, and **free-tier sessions get disconnected**
+(idle timeout around 90 minutes with no interaction; a hard cap around 12 hours regardless).
+Plan around both rather than being surprised by them mid-run.
+
+**1. Runtime → Change runtime type → GPU** (a T4 is plenty for the model sizes in step 5
+above), then clone the repo — `data/catalog.json`, `data/corpus/`, and
+`data/snapshots/dataset_v1.jsonl` are already committed, so nothing needs copying in:
+
+```python
+!git clone https://github.com/thinhnv-funtom/smash-market-levelgen-ai.git
+%cd smash-market-levelgen-ai
+!ls data/catalog.json data/corpus/prod13 data/snapshots/dataset_v1.jsonl
+```
+
+**2. Don't blindly `pip install -r requirements.txt`.** Colab ships a `torch` build already
+matched to its CUDA driver; reinstalling a different one is how you end up with a `torch`
+that can't see the GPU. Check first, and only install if this doesn't already look right:
+
+```python
+import torch
+print(torch.__version__, "cuda:", torch.cuda.is_available())
+```
+
+**3. Mount Drive and checkpoint there, not to the VM's local disk** — `checkpoints/` inside
+the cloned repo lives on the VM and is gone the moment the runtime resets, taking every
+checkpoint with it:
+
+```python
+from google.colab import drive
+drive.mount('/content/drive')
+CHECKPOINT_DIR = '/content/drive/MyDrive/LevelGenAI/checkpoints'
+```
+
+**4. Smoke test** (same rationale as step 4 above — seconds, not minutes, before spending
+real GPU time):
+
+```python
+!PYTHONPATH=src python -m levelgenai.train --snapshot data/snapshots/dataset_v1.jsonl \
+    --checkpoint-dir /tmp/smoke_test \
+    --n-layer 2 --n-head 2 --d-model 32 --batch-size 4 --max-steps 20 --eval-interval 10
+```
+
+**5. Train, checkpointing to Drive:**
+
+```python
+!PYTHONPATH=src python -m levelgenai.train --snapshot data/snapshots/dataset_v1.jsonl \
+    --checkpoint-dir {CHECKPOINT_DIR} \
+    --n-layer 6 --n-head 6 --d-model 192 --batch-size 16 --max-steps 20000 --eval-interval 500
+```
+
+**6. If the runtime disconnects mid-run**: reconnect, re-run cells 1–3 (clone + mount Drive —
+`last.pt` is still on Drive even though the VM itself is fresh), then resume instead of
+restarting from step 0:
+
+```python
+!PYTHONPATH=src python -m levelgenai.train --snapshot data/snapshots/dataset_v1.jsonl \
+    --checkpoint-dir {CHECKPOINT_DIR} --resume {CHECKPOINT_DIR}/last.pt --max-steps 20000
+```
+
+**7. Sanity-check generation** (same as step 6 above):
+
+```python
+!PYTHONPATH=src python -m levelgenai.generate --checkpoint {CHECKPOINT_DIR}/best.pt \
+    --snapshot data/snapshots/dataset_v1.jsonl \
+    --difficulty 0 --object-count-bucket 2 --move-count 24 --num-samples 8 \
+    --output-dir /content/scratch_test
+!cat /content/scratch_test/summary.json
+```
+
+**8. Get `best.pt` to wherever the Unity tool runs.** It's already durable on Drive — either
+sync/download `best.pt` from Drive into the local checkout's `Tools/LevelGenAI/checkpoints/`,
+or commit it to the repo from Colab so `git pull` picks it up elsewhere:
+
+```python
+!git config --global user.email "you@example.com"
+!git config --global user.name "Your Name"
+!cp {CHECKPOINT_DIR}/best.pt checkpoints/best.pt
+!git add checkpoints/best.pt
+!git commit -m "Add trained checkpoint from Colab"
+```
+
+Pushing needs a token — Colab has no stored GitHub credentials. Don't paste one in plaintext
+into a cell (notebooks get shared/committed); read it interactively instead:
+
+```python
+from getpass import getpass
+token = getpass("GitHub token: ")
+!git push https://{token}@github.com/thinhnv-funtom/smash-market-levelgen-ai.git master
+```
+
+- `{CHECKPOINT_DIR}`/`{token}` interpolate the Python variable into the `!` shell command —
+  that's Colab/IPython syntax, not a typo.
+- A Personal Access Token (fine-grained, `contents: write` on just this repo) beats a
+  password — GitHub no longer accepts password auth for git operations anyway.
+- Checkpoints are small enough (the model sizes discussed above) to commit as plain git blobs
+  — no LFS needed unless a later size sweep lands on something much bigger (see the Design
+  decisions section above).
 
 ## Status
 
