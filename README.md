@@ -276,6 +276,45 @@ restarting from step 0:
 !cat /content/scratch_test/summary.json
 ```
 
+**7b. Generate a real batch here instead of locally.** `generate.py` has no KV-cache (see
+`model.py`'s docstring) — every sampled token re-runs the forward pass over the whole context
+so far, so a dense level (a big object-count bucket) is genuinely slow on a local CPU-only
+`torch`. Colab's GPU makes this much cheaper, so do the actual candidate generation here, not
+on whatever machine runs the Unity Editor:
+
+```python
+import itertools, json, zipfile
+from pathlib import Path
+
+OUT_DIR = "/content/batch_out"
+combos = itertools.product([0, 1, 2], [1, 3, 5])  # (difficulty, object_count_bucket) — adjust freely
+
+for difficulty, bucket in combos:
+    out = f"{OUT_DIR}/d{difficulty}_b{bucket}"
+    !PYTHONPATH=src python -m levelgenai.generate --checkpoint {CHECKPOINT_DIR}/best.pt \
+        --snapshot data/snapshots/dataset_v1.jsonl \
+        --difficulty {difficulty} --object-count-bucket {bucket} --move-count 24 \
+        --num-samples 16 --output-dir {out}
+    summary = json.load(open(f"{out}/summary.json"))
+    print(f"d{difficulty} b{bucket}: {summary['accepted']}/{summary['requested']} accepted")
+
+with zipfile.ZipFile("/content/batch_out.zip", "w") as zf:
+    for path in Path(OUT_DIR).rglob("*.json"):
+        zf.write(path, path.relative_to(OUT_DIR))
+```
+
+Download it (`from google.colab import files; files.download("/content/batch_out.zip")`), or
+save straight to Drive instead if you'd rather not deal with a browser download. Either way,
+what you get out is the same plain level JSON `generate.py` always produces — no Colab-specific
+format. To get an accepted one into Unity, **you don't need the AI Level Generator window's
+subprocess round-trip at all**: just point the existing, generic
+`Tools > Smash Market > Level SO Generator` at a folder containing the `sample_*.json` files
+whose `summary.json` entry says `"accepted": true` (check `rejections` for the rest — same
+`support`/`overlap`/`catalog`/`plausibility`/`structural` reasons documented in the main repo's
+`Doc/AILevelGenerator.md`). That window's import path is the exact same
+`LevelSOGeneratorWindow.GenerateFromPaths` the Editor tool itself calls — it doesn't care
+whether the JSON came from Unity's own subprocess call or a zip you downloaded from Colab.
+
 **8. Get `best.pt` to wherever the Unity tool runs.** It's already durable on Drive — either
 sync/download `best.pt` from Drive into the local checkout's `Tools/LevelGenAI/checkpoints/`,
 or commit it to the repo from Colab so `git pull` picks it up elsewhere:
