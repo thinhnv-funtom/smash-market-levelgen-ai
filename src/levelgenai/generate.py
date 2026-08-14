@@ -1,10 +1,14 @@
 """Sampling entry point the Unity Editor tool shells out to (see the plan's
 Phase 4 / Doc/AILevelGenerator.md). Given a requested difficulty/size/
 moveCount profile, samples N candidate token sequences and runs each through
-validators.py (Phase 3) — only ACCEPTED levels are written to --output-dir,
-so Unity never has to re-implement or re-run any of those checks itself. A
-summary.json alongside them (accepted/rejected counts + rejection reasons)
-is what the Editor tool's preview list reads.
+validators.py (Phase 3). Every sample that decoded into a level at all is
+written to --output-dir — accepted AND rejected — so a rejected candidate
+can still be opened and inspected (why it looks the way it does, not just
+why validators.py rejected it); only a sample that failed to parse into a
+level in the first place (no <EOS>, or a genuinely malformed sequence) has
+nothing to write. A summary.json alongside them (accepted/rejected counts,
+each sample's rejection reasons, and its file name if one exists) is what
+the Editor tool's preview list reads.
 
 NOT executed locally (see model.py's docstring). Smoke-test on the training
 machine against a checkpoint from a short train.py run before trusting output.
@@ -86,10 +90,11 @@ def main() -> None:
         result = validate(ids, catalog, vocab, stats)
         entry = {"sample": i, "accepted": result.accepted, "rejections": result.rejections,
                   "warnings": result.warnings}
-        if result.accepted:
-            file_name = f"generated_{i}.json"
+        if result.level is not None:  # wrote regardless of accept/reject — see module docstring
+            file_name = f"sample_{i}.json"
             (args.output_dir / file_name).write_text(json.dumps(result.level), encoding="utf-8")
             entry["file"] = file_name
+        if result.accepted:
             accepted += 1
         results.append(entry)
 
@@ -97,7 +102,9 @@ def main() -> None:
                "rejected": args.num_samples - accepted, "samples": results}
     (args.output_dir / "summary.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
 
-    print(f"accepted {accepted}/{args.num_samples} — wrote {args.output_dir / 'summary.json'}")
+    written = sum(1 for r in results if "file" in r)
+    print(f"accepted {accepted}/{args.num_samples}, {written}/{args.num_samples} written to disk for "
+          f"inspection (accepted + rejected-but-parseable) — wrote {args.output_dir / 'summary.json'}")
 
 
 if __name__ == "__main__":
