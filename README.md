@@ -80,7 +80,7 @@ Copies `Assets/_Use/Level/prod-13/*.json` into `data/corpus/prod13/` and seeds
 edits `prod13`'s own files, only this repo's copy. If `data/catalog.json` is present, it
 also round-trip-checks every level (`roundtrip.py`) and marks any that don't decode back
 exactly with `excluded_reason` in the manifest, so `compile_snapshot` leaves them out of
-training without touching the source file. Currently **162/1000 levels excluded this way**
+training without touching the source file. Currently **209/1000 levels excluded this way**
 — see Status below for why.
 
 ## Status
@@ -101,4 +101,24 @@ training without touching the source file. Currently **162/1000 levels excluded 
   - Decision: keep (1), and **exclude the 162 affected levels from training** via the
     manifest mechanism above rather than keep chasing the geometry — revisit only if v1
     training results actually suffer from the smaller corpus.
-- **Phase 2+** — `model.py` / `train.py` / `generate.py` / `validators.py` are still stubs.
+- **Phase 2 (tokenization half)** — `quantize.py` / `vocab.py` / `flatten.py` done: the
+  structural representation above flattens into a finite integer token sequence (`<BOS> <DIFF>
+  <OBJCOUNT_BUCKET> <MOVECOUNT>`, table blocks, object blocks with a bounded `<ANCHOR_BACK_k>`
+  back-reference instead of an absolute pointer) and back again, verified against the clean
+  corpus (`flatten_check.py`, wired into `export_corpus.py`'s exclusion check same as Phase 1's).
+  - Vocab size **950** tokens; max real sequence length **3611** (levels up to 408 objects).
+  - Two real bugs found and fixed by testing against real data, not just written and trusted:
+    independently-quantizing a rotation's 4 quaternion components doesn't reproduce a *unit*
+    quaternion, and that small error **compounds down a RESTS_ON chain** (deep stacks drifted
+    up to ~0.25 units) — fixed by giving the common **pure-yaw** case (~10% of objects) its own
+    single-angle token instead of 4 independent components, which can't help but stay unit-norm.
+    The angle formula itself then had a sign-canonicalization bug (`q` and `-q` are the same
+    rotation; the naive half-angle formula could double past the token range and silently clamp
+    to the wrong angle) — fixed by canonicalizing `w >= 0` before halving.
+  - Residual gap after both fixes: **47 more levels** (on top of Phase 1's 162) fail only at
+    the flatten layer — genuine multi-axis tilts (not pure yaw) still use the 4-component
+    quaternion and can still compound over a deep chain. Same call as Phase 1: excluded via
+    the manifest rather than chased further. **791/1000 levels (79.1%) reach the final clean
+    training snapshot.**
+- **Phase 2 (model half)** — `model.py` / `train.py` / `generate.py` / `validators.py` are
+  still stubs; this is the next work.
