@@ -25,9 +25,44 @@ class Quantizer:
     def decode(self, index: int) -> float:
         return self.lo + (index + 0.5) * self.step
 
+    def encode_grid(self, value: float) -> int:
+        """Nearest-grid-point encode, pairs with decode_grid() — see its
+        docstring. Snaps to the closest multiple of `step` from `lo` instead
+        of floor-bucketing into an interval, so a value sitting just inside
+        the "wrong" side of an interval boundary (real authoring noise, e.g.
+        -0.003 instead of 0.0) doesn't get floored a full bin away from the
+        nearby grid point it's actually closest to.
+        """
+        idx = round((min(max(value, self.lo), self.hi) - self.lo) / self.step)
+        return max(0, min(self.bins - 1, idx))
+
+    def decode_grid(self, index: int) -> float:
+        """Nearest-grid-point decode: reproduces an exact multiple-of-`step`
+        input with ZERO error, instead of decode()'s constant +step/2
+        bin-center bias. That bias is harmless for a value quantized once in
+        isolation (well within any reasonable tolerance), but OFFSET is added
+        onto an already-decoded (already-quantized) anchor position, so a
+        one-directional per-hop bias compounds additively down a RESTS_ON
+        chain (measured: depth up to 11 in the real corpus — enough for
+        decode()'s bias alone to blow past any sane position tolerance).
+        Must be paired with encode_grid(), not encode() — floor-bucketing
+        plus this decode would instead make near-boundary noise WORSE (up to
+        a full step off) since it can floor a value into the bin on the
+        wrong side of the nearest grid point.
+        """
+        return self.lo + index * self.step
+
 
 # Object x/z and table pos (x, y, z) — corpus range observed ~[-6.5, 14], headroom to [-8, 16].
 COORD = Quantizer(-8.0, 16.0, 192)
+# Object x/z OFFSET relative to its RESTS_ON anchor OBJECT (not used when the anchor is the
+# table — that case still uses absolute COORD, same as before). Only meaningful once an anchor
+# is chosen, so this is what makes "resting on top of anchor" a geometric fact derived from the
+# model's own two choices instead of two independently-sampled fields that can disagree (see
+# session notes on the floating-object bug). Corpus-measured (dx, dz) relative to the anchor:
+# 69.5% exactly (0, 0), p90 distance 1.0, p99 2.0, max 3.2 — range/resolution below has headroom
+# past all of that while keeping COORD's own 0.125 step size.
+OFFSET = Quantizer(-4.0, 4.0, 64)
 # Table dim (x, y, z) — observed ~[-0.5, 11].
 DIM = Quantizer(-1.0, 12.0, 64)
 # Quaternion components (x, y, z, w), always in [-1, 1] by construction. Only

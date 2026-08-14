@@ -71,7 +71,7 @@ def infer_anchors(objects: list[tuple[Vec3, Vec3, Quat]], eps: float = EPS) -> l
         for j in range(n):
             if j == i or abs(tops[j] - bottoms[i]) >= eps:
                 continue
-            overlap = _xz_overlap(pos, extents[i], objects[j][0], extents[j])
+            overlap = xz_overlap_area(pos, extents[i], objects[j][0], extents[j])
             if overlap > best_overlap:
                 best_overlap, best_j = overlap, j
 
@@ -84,7 +84,18 @@ def infer_anchors(objects: list[tuple[Vec3, Vec3, Quat]], eps: float = EPS) -> l
     return anchors
 
 
-def _xz_overlap(a_pos: Vec3, a_extent: Vec3, b_pos: Vec3, b_extent: Vec3) -> float:
+def xz_overlap_area(a_pos: Vec3, a_extent: Vec3, b_pos: Vec3, b_extent: Vec3) -> float:
+    """AABB (not oriented-rectangle) XZ overlap area — this, not an exact
+    rotated-rectangle SAT test, is what defines "resting on" throughout this
+    module (infer_anchors above) and must stay the SAME notion of overlap
+    anywhere else that asks "does this object actually rest on that one" —
+    e.g. validators.py's support_check. A stricter exact-SAT test can
+    disagree with the ground truth this function itself produced (two
+    objects whose AABBs clearly overlap can still have non-intersecting true
+    rotated footprints at some angles), which would flag real corpus
+    RESTS_ON relationships as "not actually supported" — not a geometry bug,
+    just a mismatched definition of overlap between the two call sites.
+    """
     ox = max(0.0, min(a_pos[0] + a_extent[0], b_pos[0] + b_extent[0])
               - max(a_pos[0] - a_extent[0], b_pos[0] - b_extent[0]))
     oz = max(0.0, min(a_pos[2] + a_extent[2], b_pos[2] + b_extent[2])

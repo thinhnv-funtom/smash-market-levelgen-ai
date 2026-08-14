@@ -15,11 +15,19 @@ reaches the expensive ones:
    frozen at some training-time catalog snapshot that may have since drifted
    (a type removed, a variant's size changed) — the same class of check
    LevelCoverageWindow.Validate already runs in Unity.
-3. Geometric validity — no two objects on the same table overlap. Approximates
-   each object's XZ footprint as a yaw-rotated rectangle (2D SAT) and checks
-   Y-range separately — exact for the ~95%+ of objects that are grid/yaw-only,
-   an approximation for genuine multi-axis tilts (same simplification used
-   throughout tokenizer.py/geometry.py, not a new one introduced here).
+3. Geometric validity — no two objects on the same table overlap, AND every
+   object anchored to another object (RESTS_ON) actually shares footprint
+   with that anchor in XZ. The RESTS_ON encoding (flatten.py's anchor-relative
+   OFFSET) makes this likely by construction — the model's offset choices
+   cluster near the anchor, learned from the real corpus's own distribution —
+   but "likely" isn't "guaranteed": nothing stops a still-learning model from
+   emitting a valid anchor and a valid-but-large offset that place the object
+   beside its anchor instead of on it. This is the defense-in-depth backstop
+   for exactly that case — see the floating-object bug this whole scheme
+   replaced. Both checks approximate each object's XZ footprint as a
+   yaw-rotated rectangle (2D SAT) — exact for the ~95%+ of objects that are
+   grid/yaw-only, an approximation for genuine multi-axis tilts (same
+   simplification used throughout tokenizer.py/geometry.py).
 4. Statistical plausibility — reject an (difficulty, object_count, moveCount)
    combination far outside what StatsProfile measured from the training
    corpus. Also flags (does not reject) any table with zero objects — real
@@ -35,9 +43,11 @@ from pathlib import Path
 
 from levelgenai.catalog import Catalog
 from levelgenai.flatten import from_tokens
-from levelgenai.geometry import rotated_half_extents
-from levelgenai.tokenizer import decode_level
+from levelgenai.geometry import rotated_half_extents, xz_overlap_area
+from levelgenai.tokenizer import RelationalLevel, decode_level
 from levelgenai.vocab import Vocab
+
+SUPPORT_MIN_AREA = 1e-6  # any positive AABB overlap counts as "resting on" — see xz_overlap_area
 
 OVERLAP_EPS = 0.15  # objects touching (not overlapping) within this margin are fine — sized to
 # absorb COORD quantization noise on top of genuine touching (measured: two independently
@@ -57,13 +67,14 @@ def validate(ids: list[int], catalog: Catalog, vocab: Vocab, stats: "StatsProfil
     rejections: list[str] = []
     warnings: list[str] = []
 
-    level, structural_errors = _structural_check(ids, vocab, catalog)
+    level, rel, structural_errors = _structural_check(ids, vocab, catalog)
     rejections += structural_errors
     if level is None:
         return ValidationResult(accepted=False, rejections=rejections, warnings=warnings, level=None)
 
     rejections += catalog_check(level, catalog)
     rejections += overlap_check(level)
+    rejections += support_check(rel, catalog)
     reject, warn = plausibility_check(level, stats)
     rejections += reject
     warnings += warn
@@ -71,25 +82,26 @@ def validate(ids: list[int], catalog: Catalog, vocab: Vocab, stats: "StatsProfil
     return ValidationResult(accepted=not rejections, rejections=rejections, warnings=warnings, level=level)
 
 
-def _structural_check(ids: list[int], vocab: Vocab, catalog: Catalog) -> tuple[dict | None, list[str]]:
+def _structural_check(ids: list[int], vocab: Vocab,
+                       catalog: Catalog) -> tuple[dict | None, RelationalLevel | None, list[str]]:
     if vocab.id("<EOS>") not in ids:
-        return None, ["structural: no <EOS> — truncated generation"]
+        return None, None, ["structural: no <EOS> — truncated generation"]
     try:
         rel = from_tokens(ids, vocab, catalog)
     except Exception as e:
-        return None, [f"structural: {type(e).__name__}: {e}"]
+        return None, None, [f"structural: {type(e).__name__}: {e}"]
 
     for i, o in enumerate(rel.objects):
         if o.anchor != "table" and not (0 <= o.anchor < i):
-            return None, [f"structural: object {i} anchors to invalid index {o.anchor}"]
+            return None, None, [f"structural: object {i} anchors to invalid index {o.anchor}"]
         if o.table_ref >= len(rel.tables):
-            return None, [f"structural: object {i} references table {o.table_ref}, only {len(rel.tables)} exist"]
+            return None, None, [f"structural: object {i} references table {o.table_ref}, only {len(rel.tables)} exist"]
 
     try:
         level = decode_level(rel, catalog)
     except Exception as e:
-        return None, [f"structural: decode failed: {type(e).__name__}: {e}"]
-    return level, []
+        return None, None, [f"structural: decode failed: {type(e).__name__}: {e}"]
+    return level, rel, []
 
 
 def catalog_check(level: dict, catalog: Catalog) -> list[str]:
@@ -115,6 +127,35 @@ def overlap_check(level: dict) -> list[str]:
             for j in range(i + 1, len(objs)):
                 if _objects_overlap(objs[i], objs[j]):
                     errors.append(f"overlap: table {table['id']} objects {i} and {j} overlap")
+    return errors
+
+
+def support_check(rel: RelationalLevel, catalog: Catalog) -> list[str]:
+    """Backstop against the floating-object bug flatten.py's anchor-relative
+    OFFSET is meant to prevent: for every object anchored to another object
+    (not the table), its XZ footprint must actually share AABB area with the
+    anchor's — the SAME notion of overlap geometry.py's infer_anchors uses to
+    define RESTS_ON in the first place (see xz_overlap_area's docstring for
+    why this must NOT be the stricter oriented-rectangle SAT test overlap_check
+    uses: that stricter test can disagree with real corpus ground truth and
+    flag a genuine RESTS_ON relationship as unsupported). A large-but-legal
+    OFFSET value can still place an object beside its anchor rather than on
+    it; this is what catches that case rather than letting a floating
+    candidate slip through because it happens not to overlap anything else.
+    """
+    errors = []
+    for i, o in enumerate(rel.objects):
+        if o.anchor == "table":
+            continue
+        anchor = rel.objects[o.anchor]
+        o_half = tuple(s / 2 for s in catalog.size_vector(o.type_id, o.size_key))
+        a_half = tuple(s / 2 for s in catalog.size_vector(anchor.type_id, anchor.size_key))
+        o_extent = rotated_half_extents(o_half, o.rot)
+        a_extent = rotated_half_extents(a_half, anchor.rot)
+        area = xz_overlap_area((o.x, 0.0, o.z), o_extent, (anchor.x, 0.0, anchor.z), a_extent)
+        if area <= SUPPORT_MIN_AREA:
+            errors.append(f"support: object {i} rests on object {o.anchor} but its footprint "
+                           f"doesn't overlap it — floating")
     return errors
 
 

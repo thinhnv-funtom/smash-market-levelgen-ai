@@ -27,7 +27,7 @@ from pathlib import Path
 
 from levelgenai.catalog import load_catalog
 from levelgenai.flatten_check import check_level as check_flatten
-from levelgenai.manifest import ManifestEntry, append_entry
+from levelgenai.manifest import ManifestEntry, append_entry, read_manifest, write_manifest
 from levelgenai.roundtrip import check_level as check_structural
 from levelgenai.vocab import Vocab
 
@@ -78,11 +78,60 @@ def export(unity_root: Path) -> tuple[int, int]:
     return copied, excluded
 
 
+def revalidate() -> tuple[int, int, int]:
+    """Re-runs both round-trip checks against every existing manifest entry and updates
+    excluded_reason in place — needed whenever the tokenizer/flatten/vocab/quantizer changes,
+    since append_entry() is intentionally idempotent-by-path and will never revisit an entry
+    export_corpus already wrote. Does not touch data/corpus/ or re-copy from Unity; only
+    manifest.jsonl's excluded_reason column changes. Returns (checked, now_excluded, changed).
+    """
+    catalog = load_catalog(CATALOG_PATH)
+    vocab = Vocab(catalog)
+
+    entries = read_manifest(MANIFEST_PATH)
+    changed = now_excluded = 0
+    for entry in entries:
+        level_path = REPO_ROOT / entry.path
+        if not level_path.exists():
+            continue
+        level = json.loads(level_path.read_text(encoding="utf-8"))
+
+        structural_errors = check_structural(level, catalog)
+        if structural_errors:
+            reason = f"structural_roundtrip_mismatch: {len(structural_errors)} errors"
+        else:
+            flatten_errors = check_flatten(level, catalog, vocab)
+            reason = f"flatten_roundtrip_mismatch: {len(flatten_errors)} errors" if flatten_errors else None
+
+        if reason != entry.excluded_reason:
+            changed += 1
+        entry.excluded_reason = reason
+        if reason:
+            now_excluded += 1
+
+    write_manifest(MANIFEST_PATH, entries)
+    return len(entries), now_excluded, changed
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--unity-root", required=True, type=Path,
-                         help="Path to the smash-market-2 Unity project checkout.")
+    parser.add_argument("--unity-root", type=Path,
+                         help="Path to the smash-market-2 Unity project checkout. Omit with --revalidate.")
+    parser.add_argument("--revalidate", action="store_true",
+                         help="Re-check every existing manifest entry against the current "
+                              "catalog/vocab and refresh excluded_reason, instead of copying new "
+                              "levels from Unity. Run this after any tokenizer/flatten/vocab/quantizer "
+                              "change — export/append_entry never revisits an already-recorded path.")
     args = parser.parse_args()
+
+    if args.revalidate:
+        checked, excluded, changed = revalidate()
+        print(f"Revalidated {checked} manifest entries against the current catalog/vocab: "
+              f"{excluded} now excluded, {changed} changed from their previous status.")
+        return
+
+    if args.unity_root is None:
+        parser.error("--unity-root is required unless --revalidate is given")
 
     copied, excluded = export(args.unity_root.resolve())
     print(f"Copied {copied} levels into {PROD13_DST}")

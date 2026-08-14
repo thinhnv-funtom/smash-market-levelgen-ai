@@ -6,6 +6,13 @@ tolerated pattern — see Doc/LevelCoverage.md's "warning, not hard error"
 philosophy) plus a modest amount of quantization-introduced borderline noise.
 A big jump from that baseline means OVERLAP_EPS or the SAT check regressed.
 
+support (the anchor-XZ-overlap backstop) uses the SAME AABB-overlap notion
+geometry.py's infer_anchors uses to define RESTS_ON in the first place (see
+xz_overlap_area's docstring), so it should reject almost none of the real
+corpus — it's checking real data against the exact rule that produced it.
+A tiny residual (a couple of levels) survives from floating-point/epsilon
+edge cases at the boundary of "just barely touching," not a new bug.
+
 Run directly:
     PYTHONPATH=src python tests/test_validators.py
 """
@@ -51,10 +58,14 @@ def main() -> None:
 
     print(f"accepted: {accepted}/{len(entries)} ({100 * accepted / len(entries):.1f}%)")
     print(f"rejection reasons: {dict(reasons)}")
-    if reasons.keys() - {"overlap"}:
-        print("FAIL: real, already-clean levels were rejected for a non-overlap reason — that's a real bug.")
+    if reasons.keys() - {"overlap", "support"}:
+        print("FAIL: real, already-clean levels were rejected for an unexpected reason — that's a real bug.")
         sys.exit(1)
-    print("OK: only 'overlap' rejections on real data, consistent with the known tolerated-clipping baseline.")
+    if reasons.get("support", 0) > 20:
+        print(f"FAIL: support rejected {reasons['support']} — that's well past the tiny edge-case "
+              f"residual expected once it shares infer_anchors' own overlap definition; investigate.")
+        sys.exit(1)
+    print("OK: only 'overlap'/'support' rejections on real data, consistent with the known tolerated baseline.")
 
 
 if __name__ == "__main__":

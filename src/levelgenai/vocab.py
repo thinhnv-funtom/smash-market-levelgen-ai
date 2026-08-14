@@ -11,7 +11,7 @@ vocabulary, not one that silently shifts if the corpus changes.
 from __future__ import annotations
 
 from levelgenai.catalog import Catalog
-from levelgenai.quantize import COORD, DIM, MOVE_RANGE, MOVE_SPEED, QUAT, ROT_SPEED, YAW
+from levelgenai.quantize import COORD, DIM, MOVE_RANGE, MOVE_SPEED, OFFSET, QUAT, ROT_SPEED, YAW
 
 MAX_TABLES = 5  # observed max in the real corpus
 MAX_BACK = 64  # RESTS_ON back-reference cap — covers p99 of real anchor distances (measured: 48)
@@ -40,6 +40,7 @@ class Vocab:
                 self._add(f"<SIZE_{type_id}_{axis}_{magnitude}>")
 
         self._add(*(f"<COORD_{i}>" for i in range(COORD.bins)))
+        self._add(*(f"<OFFSET_{i}>" for i in range(OFFSET.bins)))
         self._add(*(f"<DIM_{i}>" for i in range(DIM.bins)))
         self._add(*(f"<QUAT_{i}>" for i in range(QUAT.bins)))
         self._add(*(f"<YAW_{i}>" for i in range(YAW.bins)))

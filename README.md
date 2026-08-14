@@ -23,7 +23,8 @@ data/
   snapshots/              # frozen dataset_v{N}.jsonl compiled from the manifest at train time
   scratch/                # generate.py's default --output-dir when called from the Unity tool
 src/levelgenai/
-  export_corpus.py        # copies prod-13 JSON into data/corpus/prod13/, round-trip-excludes mismatches
+  export_corpus.py        # copies prod-13 JSON into data/corpus/prod13/, round-trip-excludes mismatches;
+                           # --revalidate re-checks the existing manifest against the current vocab/quantizers
   manifest.py             # manifest read/write + snapshot compilation (AI-sourced fraction cap)
   promote.py              # add an approved generated level into data/corpus/ai_accepted/ + manifest
   stats.py                # corpus statistics (object/table/blocker counts, difficulty/moveCount dists)
@@ -38,7 +39,7 @@ src/levelgenai/
   model.py                 # nanoGPT-style decoder-only transformer
   train.py                 # training loop — tokenize once, stratified train/val split, AdamW, checkpoint
   generate.py              # samples from a checkpoint, runs validators.py, used by the Unity Editor tool
-  validators.py            # structural / catalog / overlap / statistical-plausibility gates (Phase 3)
+  validators.py            # structural / catalog / overlap / support / statistical-plausibility gates (Phase 3)
 checkpoints/               # trained model weights (plain git while small; switch to git-lfs if the
                             # model-size sweep lands on something large — see below)
 tests/                      # runnable directly, no pytest needed: PYTHONPATH=src python tests/test_*.py
@@ -339,8 +340,46 @@ token = getpass("GitHub token: ")
   - Residual gap after both fixes: **47 more levels** (on top of Phase 1's 162) fail only at
     the flatten layer — genuine multi-axis tilts (not pure yaw) still use the 4-component
     quaternion and can still compound over a deep chain. Same call as Phase 1: excluded via
-    the manifest rather than chased further. **791/1000 levels (79.1%) reach the final clean
-    training snapshot.**
+    the manifest rather than chased further. 791/1000 levels (79.1%) reached the clean
+    training snapshot **before the floating-object fix below**; see that entry for the
+    current number.
+  - **Floating-object bug, found after the first real generation run** (not by testing
+    against the corpus — the corpus round-tripped fine; this only showed up on model
+    *output*): an object's X/Z were encoded as absolute `<COORD_*>` tokens completely
+    independent of its `<ANCHOR_BACK_k>` choice. RESTS_ON guaranteed no *vertical* gap from
+    whichever anchor was picked, but nothing tied X/Z to that anchor's footprint — a model
+    could (and did) emit a valid anchor and a valid-but-unrelated position, producing an
+    object whose Y sat on its anchor's top while its footprint floated somewhere else, or
+    landed on a different object than the one Y was computed from ("touches only
+    horizontally/diagonally, wrong logic" as reported). Root-cause fix: when the anchor is
+    another object, X/Z are now encoded as an `<OFFSET_*>` **relative to that anchor's own
+    x/z** (measured from the real corpus: 69.5% exactly `(0,0)`, p99 distance 2.0, max 3.2 —
+    see `quantize.py`'s `OFFSET`), so "near its anchor" is a fact the model's own two choices
+    produce together, not two independent fields that can silently disagree. Anchored-to-table
+    objects are unaffected (still absolute `<COORD_*>`, unchanged).
+    - This reintroduced the exact class of bug Phase 2 had already hit once for rotation:
+      `OFFSET` is added onto an *already-decoded* (already-quantized) anchor position, so
+      `Quantizer.decode()`'s normal bin-center convention has a constant +step/2 bias that
+      **compounds additively down a RESTS_ON chain** (measured depth up to 11 in the real
+      corpus) — an early version of this fix broke 99.7% of the corpus's round-trip before
+      this was caught by testing against real data. Fixed with a dedicated
+      `encode_grid`/`decode_grid` pair on `Quantizer` (nearest-grid-point instead of
+      bin-center/floor) so an exact-multiple-of-`step` offset — the vast majority, since
+      the real corpus already grid-snaps — round-trips with **zero** error instead of a
+      biased one, and non-grid offsets get an unbiased ±step/2 instead of a one-directional
+      bias. Used only for `OFFSET`; every other quantizer (`COORD`, `DIM`, `QUAT`, ...) is
+      unchanged.
+    - Net cost: this is a real, measured increase in excluded training levels, not a free
+      fix — going from 791/1000 (79.1%) to **752/1000 (75.2%)** clean levels, all of the new
+      exclusions being deep chains of genuinely non-grid-aligned (freeform/tilted) positions,
+      the same class of thing Phase 1/2's existing exclusions already track. Re-run
+      `python -m levelgenai.export_corpus --revalidate` (no `--unity-root` needed) after any
+      future vocab/tokenizer/quantizer change — `export`'s `append_entry` is intentionally
+      idempotent-by-path and will never re-check an already-recorded level on its own.
+    - **Vocab size changed (950 -> 1014 tokens) — any existing checkpoint is now
+      incompatible and must be retrained from scratch.** Token ids shifted, so loading an old
+      checkpoint against the new vocab would silently mismatch embeddings, not just fail to
+      load.
 - **Phase 2 (model half)** — `model.py` (nanoGPT-style decoder-only transformer),
   `train.py` (loads a snapshot, tokenizes once, stratified train/val split by difficulty,
   dynamic per-batch padding, AdamW, checkpoints on best val loss) and `generate.py`
@@ -350,14 +389,28 @@ token = getpass("GitHub token: ")
   decision, not worth fixing here since training happens on a separate GPU machine anyway.
   Smoke-test before a real run — see train.py's module docstring for the exact command
   (a few steps on a tiny model).
-- **Phase 3 (validators)** — done: `validators.py`'s four gates (structural, catalog,
-  overlap, statistical plausibility) run on generate.py's output before anything reaches
-  Unity's import path. Verified against the real corpus (`tests/test_validators.py`, fully
-  runnable now — no torch needed): structural/catalog/plausibility never reject real data (as
-  expected, it's already valid); overlap accepts **676/791 (85.5%)**, consistent with the
-  ~15% of real levels that already have known, tolerated rotated-object corner clipping
-  (see `Doc/LevelCoverage.md`'s warning-not-error philosophy) plus a bit of quantization
-  noise on top.
+- **Phase 3 (validators)** — done: `validators.py`'s five gates (structural, catalog,
+  overlap, support, statistical plausibility) run on generate.py's output before anything
+  reaches Unity's import path. Verified against the real corpus (`tests/test_validators.py`,
+  fully runnable now — no torch needed): structural/catalog/plausibility never reject real
+  data (as expected, it's already valid); overlap+support together accept **665/752 (88.4%)**
+  of the current clean set, consistent with the known, tolerated rotated-object corner
+  clipping (see `Doc/LevelCoverage.md`'s warning-not-error philosophy) plus a bit of
+  quantization noise on top.
+  - **`support_check`** is the defense-in-depth backstop for the floating-object bug above:
+    even though `OFFSET` makes "footprint overlaps the anchor" *likely*, nothing in the
+    grammar makes it *certain* — a still-learning model can emit a valid anchor and a
+    valid-but-large offset that place an object beside its anchor instead of on it. This
+    check rejects exactly that: for every object anchored to another object, its XZ footprint
+    must share AABB area with the anchor's — **the same AABB-overlap notion
+    `geometry.py`'s `infer_anchors` uses to define RESTS_ON in the first place**
+    (`xz_overlap_area`), not `overlap_check`'s stricter oriented-rectangle SAT test. That
+    distinction mattered: an early version reused the stricter SAT test and flagged **425
+    rejection instances across 46 real, already-clean levels** as "unsupported" — not a real
+    bug, just disagreeing with the looser AABB rule that had already decided those were
+    RESTS_ON relationships when the corpus was tokenized. Sharing the same overlap
+    definition dropped that to **5 instances across 2 levels**, the tiny floating-point/epsilon
+    residual you'd expect from checking real data against the exact rule that produced it.
   - Two real bugs found by this same test-against-real-data discipline: the overlap SAT
     check had an inverted epsilon sign that flagged *every touching pair* as overlapping
     (measured: 788/791 levels — obviously wrong for shipped content); and once fixed,

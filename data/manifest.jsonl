@@ -27,7 +27,7 @@
 {"path": "data/corpus/prod13/Level121.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level122.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level123.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
-{"path": "data/corpus/prod13/Level124.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
+{"path": "data/corpus/prod13/Level124.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "flatten_roundtrip_mismatch: 4 errors"}
 {"path": "data/corpus/prod13/Level125.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level126.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level127.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
@@ -39,7 +39,7 @@
 {"path": "data/corpus/prod13/Level132.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level133.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level134.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "structural_roundtrip_mismatch: 5 errors"}
-{"path": "data/corpus/prod13/Level135.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
+{"path": "data/corpus/prod13/Level135.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "flatten_roundtrip_mismatch: 16 errors"}
 {"path": "data/corpus/prod13/Level136.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level137.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "structural_roundtrip_mismatch: 4 errors"}
 {"path": "data/corpus/prod13/Level138.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
@@ -54,7 +54,7 @@
 {"path": "data/corpus/prod13/Level146.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level147.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level148.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
-{"path": "data/corpus/prod13/Level149.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
+{"path": "data/corpus/prod13/Level149.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "flatten_roundtrip_mismatch: 10 errors"}
 {"path": "data/corpus/prod13/Level15.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level150.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level151.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
@@ -68,12 +68,12 @@
 {"path": "data/corpus/prod13/Level159.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "structural_roundtrip_mismatch: 4 errors"}
 {"path": "data/corpus/prod13/Level16.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level160.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
-{"path": "data/corpus/prod13/Level161.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
+{"path": "data/corpus/prod13/Level161.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "flatten_roundtrip_mismatch: 2 errors"}
 {"path": "data/corpus/prod13/Level162.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level163.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level164.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level165.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
-{"path": "data/corpus/prod13/Level166.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
+{"path": "data/corpus/prod13/Level166.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "flatten_roundtrip_mismatch: 3 errors"}
 {"path": "data/corpus/prod13/Level167.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level168.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level169.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "structural_roundtrip_mismatch: 4 errors"}
@@ -104,7 +104,7 @@
 {"path": "data/corpus/prod13/Level191.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level192.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level193.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
-{"path": "data/corpus/prod13/Level194.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
+{"path": "data/corpus/prod13/Level194.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "flatten_roundtrip_mismatch: 2 errors"}
 {"path": "data/corpus/prod13/Level195.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "structural_roundtrip_mismatch: 31 errors"}
 {"path": "data/corpus/prod13/Level196.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level197.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
@@ -123,19 +123,19 @@
 {"path": "data/corpus/prod13/Level208.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level209.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level21.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
-{"path": "data/corpus/prod13/Level210.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
+{"path": "data/corpus/prod13/Level210.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "flatten_roundtrip_mismatch: 9 errors"}
 {"path": "data/corpus/prod13/Level211.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level212.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level213.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "structural_roundtrip_mismatch: 13 errors"}
-{"path": "data/corpus/prod13/Level214.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
+{"path": "data/corpus/prod13/Level214.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "flatten_roundtrip_mismatch: 62 errors"}
 {"path": "data/corpus/prod13/Level215.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level216.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level217.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level218.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level219.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level22.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
-{"path": "data/corpus/prod13/Level220.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
-{"path": "data/corpus/prod13/Level221.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
+{"path": "data/corpus/prod13/Level220.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "flatten_roundtrip_mismatch: 1 errors"}
+{"path": "data/corpus/prod13/Level221.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "flatten_roundtrip_mismatch: 42 errors"}
 {"path": "data/corpus/prod13/Level222.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level223.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level224.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
@@ -185,7 +185,7 @@
 {"path": "data/corpus/prod13/Level264.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level265.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level266.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
-{"path": "data/corpus/prod13/Level267.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
+{"path": "data/corpus/prod13/Level267.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "flatten_roundtrip_mismatch: 5 errors"}
 {"path": "data/corpus/prod13/Level268.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level269.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level27.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
@@ -208,7 +208,7 @@
 {"path": "data/corpus/prod13/Level285.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level286.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "flatten_roundtrip_mismatch: 54 errors"}
 {"path": "data/corpus/prod13/Level287.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
-{"path": "data/corpus/prod13/Level288.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
+{"path": "data/corpus/prod13/Level288.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "flatten_roundtrip_mismatch: 1 errors"}
 {"path": "data/corpus/prod13/Level289.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level29.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level290.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "structural_roundtrip_mismatch: 6 errors"}
@@ -302,7 +302,7 @@
 {"path": "data/corpus/prod13/Level37.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level370.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level371.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
-{"path": "data/corpus/prod13/Level372.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
+{"path": "data/corpus/prod13/Level372.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "flatten_roundtrip_mismatch: 6 errors"}
 {"path": "data/corpus/prod13/Level373.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level374.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level375.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
@@ -317,7 +317,7 @@
 {"path": "data/corpus/prod13/Level383.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level384.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level385.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
-{"path": "data/corpus/prod13/Level386.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
+{"path": "data/corpus/prod13/Level386.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "flatten_roundtrip_mismatch: 32 errors"}
 {"path": "data/corpus/prod13/Level387.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level388.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level389.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
@@ -341,7 +341,7 @@
 {"path": "data/corpus/prod13/Level404.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level405.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level406.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
-{"path": "data/corpus/prod13/Level407.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
+{"path": "data/corpus/prod13/Level407.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "flatten_roundtrip_mismatch: 1 errors"}
 {"path": "data/corpus/prod13/Level408.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level409.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level41.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
@@ -386,7 +386,7 @@
 {"path": "data/corpus/prod13/Level445.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level446.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level447.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
-{"path": "data/corpus/prod13/Level448.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
+{"path": "data/corpus/prod13/Level448.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "flatten_roundtrip_mismatch: 10 errors"}
 {"path": "data/corpus/prod13/Level449.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level45.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level450.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
@@ -395,14 +395,14 @@
 {"path": "data/corpus/prod13/Level453.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level454.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level455.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
-{"path": "data/corpus/prod13/Level456.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
+{"path": "data/corpus/prod13/Level456.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "flatten_roundtrip_mismatch: 11 errors"}
 {"path": "data/corpus/prod13/Level457.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level458.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level459.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "flatten_roundtrip_mismatch: 26 errors"}
 {"path": "data/corpus/prod13/Level46.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level460.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level461.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
-{"path": "data/corpus/prod13/Level462.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
+{"path": "data/corpus/prod13/Level462.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "flatten_roundtrip_mismatch: 17 errors"}
 {"path": "data/corpus/prod13/Level463.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level464.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level465.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
@@ -443,7 +443,7 @@
 {"path": "data/corpus/prod13/Level497.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "flatten_roundtrip_mismatch: 7 errors"}
 {"path": "data/corpus/prod13/Level498.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level499.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
-{"path": "data/corpus/prod13/Level5.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
+{"path": "data/corpus/prod13/Level5.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "flatten_roundtrip_mismatch: 12 errors"}
 {"path": "data/corpus/prod13/Level50.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level500.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level501.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
@@ -472,13 +472,13 @@
 {"path": "data/corpus/prod13/Level522.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level523.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level524.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "flatten_roundtrip_mismatch: 4 errors"}
-{"path": "data/corpus/prod13/Level525.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
+{"path": "data/corpus/prod13/Level525.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "flatten_roundtrip_mismatch: 3 errors"}
 {"path": "data/corpus/prod13/Level526.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level527.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level528.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "structural_roundtrip_mismatch: 12 errors"}
 {"path": "data/corpus/prod13/Level529.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level53.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
-{"path": "data/corpus/prod13/Level530.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
+{"path": "data/corpus/prod13/Level530.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "flatten_roundtrip_mismatch: 50 errors"}
 {"path": "data/corpus/prod13/Level531.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level532.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level533.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
@@ -496,7 +496,7 @@
 {"path": "data/corpus/prod13/Level544.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level545.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "structural_roundtrip_mismatch: 26 errors"}
 {"path": "data/corpus/prod13/Level546.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "structural_roundtrip_mismatch: 6 errors"}
-{"path": "data/corpus/prod13/Level547.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
+{"path": "data/corpus/prod13/Level547.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "flatten_roundtrip_mismatch: 4 errors"}
 {"path": "data/corpus/prod13/Level548.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "flatten_roundtrip_mismatch: 16 errors"}
 {"path": "data/corpus/prod13/Level549.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level55.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
@@ -508,7 +508,7 @@
 {"path": "data/corpus/prod13/Level555.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level556.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level557.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
-{"path": "data/corpus/prod13/Level558.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
+{"path": "data/corpus/prod13/Level558.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "flatten_roundtrip_mismatch: 1 errors"}
 {"path": "data/corpus/prod13/Level559.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level56.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level560.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
@@ -516,7 +516,7 @@
 {"path": "data/corpus/prod13/Level562.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level563.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level564.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
-{"path": "data/corpus/prod13/Level565.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
+{"path": "data/corpus/prod13/Level565.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "flatten_roundtrip_mismatch: 22 errors"}
 {"path": "data/corpus/prod13/Level566.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level567.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level568.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "flatten_roundtrip_mismatch: 26 errors"}
@@ -543,14 +543,14 @@
 {"path": "data/corpus/prod13/Level587.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "structural_roundtrip_mismatch: 4 errors"}
 {"path": "data/corpus/prod13/Level588.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level589.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "structural_roundtrip_mismatch: 4 errors"}
-{"path": "data/corpus/prod13/Level59.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
+{"path": "data/corpus/prod13/Level59.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "flatten_roundtrip_mismatch: 9 errors"}
 {"path": "data/corpus/prod13/Level590.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level591.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level592.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level593.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "structural_roundtrip_mismatch: 72 errors"}
 {"path": "data/corpus/prod13/Level594.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level595.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "flatten_roundtrip_mismatch: 14 errors"}
-{"path": "data/corpus/prod13/Level596.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
+{"path": "data/corpus/prod13/Level596.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "flatten_roundtrip_mismatch: 2 errors"}
 {"path": "data/corpus/prod13/Level597.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level598.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "structural_roundtrip_mismatch: 32 errors"}
 {"path": "data/corpus/prod13/Level599.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
@@ -570,10 +570,10 @@
 {"path": "data/corpus/prod13/Level610.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "structural_roundtrip_mismatch: 8 errors"}
 {"path": "data/corpus/prod13/Level611.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level612.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "structural_roundtrip_mismatch: 4 errors"}
-{"path": "data/corpus/prod13/Level613.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
+{"path": "data/corpus/prod13/Level613.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "flatten_roundtrip_mismatch: 2 errors"}
 {"path": "data/corpus/prod13/Level614.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level615.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
-{"path": "data/corpus/prod13/Level616.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
+{"path": "data/corpus/prod13/Level616.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "flatten_roundtrip_mismatch: 16 errors"}
 {"path": "data/corpus/prod13/Level617.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level618.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level619.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "flatten_roundtrip_mismatch: 13 errors"}
@@ -614,7 +614,7 @@
 {"path": "data/corpus/prod13/Level650.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level651.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level652.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
-{"path": "data/corpus/prod13/Level653.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
+{"path": "data/corpus/prod13/Level653.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "flatten_roundtrip_mismatch: 5 errors"}
 {"path": "data/corpus/prod13/Level654.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level655.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level656.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
@@ -652,7 +652,7 @@
 {"path": "data/corpus/prod13/Level685.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level686.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "structural_roundtrip_mismatch: 12 errors"}
 {"path": "data/corpus/prod13/Level687.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
-{"path": "data/corpus/prod13/Level688.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
+{"path": "data/corpus/prod13/Level688.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "flatten_roundtrip_mismatch: 12 errors"}
 {"path": "data/corpus/prod13/Level689.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level69.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level690.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
@@ -756,12 +756,12 @@
 {"path": "data/corpus/prod13/Level779.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level78.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level780.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
-{"path": "data/corpus/prod13/Level781.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
+{"path": "data/corpus/prod13/Level781.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "flatten_roundtrip_mismatch: 1 errors"}
 {"path": "data/corpus/prod13/Level782.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level783.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level784.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "structural_roundtrip_mismatch: 10 errors"}
 {"path": "data/corpus/prod13/Level785.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
-{"path": "data/corpus/prod13/Level786.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
+{"path": "data/corpus/prod13/Level786.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "flatten_roundtrip_mismatch: 4 errors"}
 {"path": "data/corpus/prod13/Level787.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level788.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level789.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "structural_roundtrip_mismatch: 2 errors"}
@@ -769,13 +769,13 @@
 {"path": "data/corpus/prod13/Level790.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level791.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "flatten_roundtrip_mismatch: 9 errors"}
 {"path": "data/corpus/prod13/Level792.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "structural_roundtrip_mismatch: 32 errors"}
-{"path": "data/corpus/prod13/Level793.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "flatten_roundtrip_mismatch: 7 errors"}
+{"path": "data/corpus/prod13/Level793.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "flatten_roundtrip_mismatch: 28 errors"}
 {"path": "data/corpus/prod13/Level794.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "structural_roundtrip_mismatch: 127 errors"}
 {"path": "data/corpus/prod13/Level795.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level796.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level797.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level798.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
-{"path": "data/corpus/prod13/Level799.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "flatten_roundtrip_mismatch: 13 errors"}
+{"path": "data/corpus/prod13/Level799.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "flatten_roundtrip_mismatch: 14 errors"}
 {"path": "data/corpus/prod13/Level8.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level80.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level800.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "structural_roundtrip_mismatch: 52 errors"}
@@ -786,7 +786,7 @@
 {"path": "data/corpus/prod13/Level805.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level806.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level807.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "flatten_roundtrip_mismatch: 2 errors"}
-{"path": "data/corpus/prod13/Level808.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
+{"path": "data/corpus/prod13/Level808.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "flatten_roundtrip_mismatch: 3 errors"}
 {"path": "data/corpus/prod13/Level809.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level81.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level810.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
@@ -829,7 +829,7 @@
 {"path": "data/corpus/prod13/Level844.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "structural_roundtrip_mismatch: 24 errors"}
 {"path": "data/corpus/prod13/Level845.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level846.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
-{"path": "data/corpus/prod13/Level847.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
+{"path": "data/corpus/prod13/Level847.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "flatten_roundtrip_mismatch: 88 errors"}
 {"path": "data/corpus/prod13/Level848.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level849.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level85.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
@@ -889,7 +889,7 @@
 {"path": "data/corpus/prod13/Level899.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level9.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level90.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "structural_roundtrip_mismatch: 12 errors"}
-{"path": "data/corpus/prod13/Level900.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "flatten_roundtrip_mismatch: 6 errors"}
+{"path": "data/corpus/prod13/Level900.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "flatten_roundtrip_mismatch: 14 errors"}
 {"path": "data/corpus/prod13/Level901.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level902.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level903.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
@@ -901,12 +901,12 @@
 {"path": "data/corpus/prod13/Level909.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "structural_roundtrip_mismatch: 45 errors"}
 {"path": "data/corpus/prod13/Level91.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level910.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
-{"path": "data/corpus/prod13/Level911.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
+{"path": "data/corpus/prod13/Level911.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "flatten_roundtrip_mismatch: 41 errors"}
 {"path": "data/corpus/prod13/Level912.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level913.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "structural_roundtrip_mismatch: 15 errors"}
 {"path": "data/corpus/prod13/Level914.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level915.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
-{"path": "data/corpus/prod13/Level916.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
+{"path": "data/corpus/prod13/Level916.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "flatten_roundtrip_mismatch: 4 errors"}
 {"path": "data/corpus/prod13/Level917.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level918.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level919.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
@@ -921,7 +921,7 @@
 {"path": "data/corpus/prod13/Level927.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "structural_roundtrip_mismatch: 8 errors"}
 {"path": "data/corpus/prod13/Level928.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "structural_roundtrip_mismatch: 2 errors"}
 {"path": "data/corpus/prod13/Level929.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "structural_roundtrip_mismatch: 8 errors"}
-{"path": "data/corpus/prod13/Level93.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
+{"path": "data/corpus/prod13/Level93.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "flatten_roundtrip_mismatch: 9 errors"}
 {"path": "data/corpus/prod13/Level930.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level931.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "structural_roundtrip_mismatch: 5 errors"}
 {"path": "data/corpus/prod13/Level932.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
@@ -944,7 +944,7 @@
 {"path": "data/corpus/prod13/Level948.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level949.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level95.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
-{"path": "data/corpus/prod13/Level950.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
+{"path": "data/corpus/prod13/Level950.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "flatten_roundtrip_mismatch: 8 errors"}
 {"path": "data/corpus/prod13/Level951.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level952.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "structural_roundtrip_mismatch: 15 errors"}
 {"path": "data/corpus/prod13/Level953.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
@@ -997,4 +997,4 @@
 {"path": "data/corpus/prod13/Level996.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level997.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
 {"path": "data/corpus/prod13/Level998.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
-{"path": "data/corpus/prod13/Level999.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": null}
+{"path": "data/corpus/prod13/Level999.json", "source": "human", "checkpoint": null, "approved_by": null, "approved_at": null, "excluded_reason": "flatten_roundtrip_mismatch: 7 errors"}
