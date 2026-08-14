@@ -120,5 +120,12 @@ training without touching the source file. Currently **209/1000 levels excluded 
     quaternion and can still compound over a deep chain. Same call as Phase 1: excluded via
     the manifest rather than chased further. **791/1000 levels (79.1%) reach the final clean
     training snapshot.**
-- **Phase 2 (model half)** — `model.py` / `train.py` / `generate.py` / `validators.py` are
-  still stubs; this is the next work.
+- **Phase 2 (model half)** — `model.py` (nanoGPT-style decoder-only transformer),
+  `train.py` (loads a snapshot, tokenizes once, stratified train/val split by difficulty,
+  dynamic per-batch padding, AdamW, checkpoints on best val loss) and `generate.py`
+  (samples from a checkpoint, decodes back to level JSON, reports — doesn't crash on —
+  any sample a still-learning model emits ungrammatically) are written but **NOT executed
+  locally**: this machine's torch install is broken (missing `torchgen`), and per-turn
+  decision, not worth fixing here since training happens on a separate GPU machine anyway.
+  Smoke-test before a real run — see train.py's module docstring for the exact command
+  (a few steps on a tiny model). `validators.py` (Phase 3) is still a stub.
