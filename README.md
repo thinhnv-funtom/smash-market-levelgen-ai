@@ -77,9 +77,28 @@ python -m levelgenai.export_corpus --unity-root /path/to/smash-market-2
 
 Copies `Assets/_Use/Level/prod-13/*.json` into `data/corpus/prod13/` and seeds
 `data/manifest.jsonl` with `source: human` entries for each. Safe to re-run — it never
-edits `prod13`'s own files, only this repo's copy.
+edits `prod13`'s own files, only this repo's copy. If `data/catalog.json` is present, it
+also round-trip-checks every level (`roundtrip.py`) and marks any that don't decode back
+exactly with `excluded_reason` in the manifest, so `compile_snapshot` leaves them out of
+training without touching the source file. Currently **162/1000 levels excluded this way**
+— see Status below for why.
 
 ## Status
 
-Phase 0 (this commit): repo skeleton, corpus export, stats, manifest/promote plumbing.
-`tokenizer.py` / `model.py` / `train.py` / `generate.py` are stubs — Phase 1/2 next.
+- **Phase 0** — done: repo skeleton, corpus export, stats, manifest/promote plumbing.
+- **Phase 1** — tokenizer/catalog/geometry done, with a known, measured, accepted gap:
+  - Relational encode/decode (`tokenizer.py`) round-trips **97.5% of objects exactly**
+    (83.8% of levels with zero mismatches) using symmetric per-type boxes (`geometry.py`) —
+    table-first grammar, type-conditioned size, RESTS_ON instead of a free Y.
+  - The residual ~2.5%: an object resting on a rotated support's actual sloped top face,
+    not its flat symmetric top. Three approaches were tried and measured against the real
+    corpus: (1) symmetric boxes — 2.5% mismatch (kept); (2) real collider pivot/bounds via a
+    Unity export — regressed to 13.1% (the level-authoring tool assumes symmetric boxes, so
+    real sub-cm collider noise fights that convention rather than fixing anything); (3) an
+    unclipped tilted-plane contact-height formula — regressed further to 5.9% + dependency
+    cycles (matches objects nowhere near the support's real footprint; needs the query point
+    clipped to the support's actual rotated face rectangle to work, which is unimplemented).
+  - Decision: keep (1), and **exclude the 162 affected levels from training** via the
+    manifest mechanism above rather than keep chasing the geometry — revisit only if v1
+    training results actually suffer from the smaller corpus.
+- **Phase 2+** — `model.py` / `train.py` / `generate.py` / `validators.py` are still stubs.

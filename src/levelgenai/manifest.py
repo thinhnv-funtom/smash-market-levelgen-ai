@@ -20,6 +20,8 @@ class ManifestEntry:
     checkpoint: str | None = None  # model checkpoint id, only set when source == "ai_generated"
     approved_by: str | None = None
     approved_at: str | None = None  # ISO 8601, set at promotion time
+    excluded_reason: str | None = None  # set (e.g. "roundtrip_mismatch: N errors") to keep the
+    # file in data/corpus/ untouched but leave it out of compile_snapshot — see roundtrip.py
 
 
 def read_manifest(manifest_path: Path) -> list[ManifestEntry]:
@@ -66,8 +68,10 @@ def compile_snapshot(repo_root: Path, manifest_path: Path, snapshots_dir: Path,
     can never silently end up majority self-generated data.
     """
     entries = read_manifest(manifest_path)
-    human = [e for e in entries if e.source == "human"]
-    ai = [e for e in entries if e.source == "ai_generated"]
+    excluded = [e for e in entries if e.excluded_reason is not None]
+    included = [e for e in entries if e.excluded_reason is None]
+    human = [e for e in included if e.source == "human"]
+    ai = [e for e in included if e.source == "ai_generated"]
 
     max_ai = int(len(human) * max_ai_fraction / max(1e-9, 1 - max_ai_fraction)) if human else 0
     if len(ai) > max_ai:
@@ -79,5 +83,9 @@ def compile_snapshot(repo_root: Path, manifest_path: Path, snapshots_dir: Path,
             level_path = repo_root / entry.path
             level = json.loads(level_path.read_text(encoding="utf-8"))
             out.write(json.dumps({"level": level, "source": entry.source}) + "\n")
+
+    if excluded:
+        print(f"compile_snapshot: {out_path.name} excludes {len(excluded)} manifest entries "
+              f"({len(human) + len(ai)} included) — see each entry's excluded_reason in {manifest_path.name}")
 
     return out_path
