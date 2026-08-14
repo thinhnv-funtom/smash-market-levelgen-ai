@@ -49,6 +49,8 @@ class ValidationResult:
     accepted: bool
     rejections: list[str]
     warnings: list[str]
+    level: dict | None  # the decoded level, whenever structural parsing succeeded — even if
+    # later rejected — so a caller (e.g. generate.py) never has to re-parse the same tokens.
 
 
 def validate(ids: list[int], catalog: Catalog, vocab: Vocab, stats: "StatsProfile") -> ValidationResult:
@@ -58,7 +60,7 @@ def validate(ids: list[int], catalog: Catalog, vocab: Vocab, stats: "StatsProfil
     level, structural_errors = _structural_check(ids, vocab, catalog)
     rejections += structural_errors
     if level is None:
-        return ValidationResult(accepted=False, rejections=rejections, warnings=warnings)
+        return ValidationResult(accepted=False, rejections=rejections, warnings=warnings, level=None)
 
     rejections += catalog_check(level, catalog)
     rejections += overlap_check(level)
@@ -66,7 +68,7 @@ def validate(ids: list[int], catalog: Catalog, vocab: Vocab, stats: "StatsProfil
     rejections += reject
     warnings += warn
 
-    return ValidationResult(accepted=not rejections, rejections=rejections, warnings=warnings)
+    return ValidationResult(accepted=not rejections, rejections=rejections, warnings=warnings, level=level)
 
 
 def _structural_check(ids: list[int], vocab: Vocab, catalog: Catalog) -> tuple[dict | None, list[str]]:

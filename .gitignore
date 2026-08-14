@@ -17,3 +17,8 @@ data/snapshots/*.jsonl
 # Trained weights — see README for the plain-git-vs-git-lfs decision point.
 checkpoints/*.pt
 checkpoints/*.ckpt
+
+# generate.py's scratch output (the AI Level Generator Unity tool's --output-dir) —
+# transient candidates pending review, not something to track.
+data/scratch/*.json
+data/scratch/**/*.json
