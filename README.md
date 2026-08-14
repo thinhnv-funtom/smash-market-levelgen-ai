@@ -128,4 +128,19 @@ training without touching the source file. Currently **209/1000 levels excluded 
   locally**: this machine's torch install is broken (missing `torchgen`), and per-turn
   decision, not worth fixing here since training happens on a separate GPU machine anyway.
   Smoke-test before a real run — see train.py's module docstring for the exact command
-  (a few steps on a tiny model). `validators.py` (Phase 3) is still a stub.
+  (a few steps on a tiny model).
+- **Phase 3 (validators)** — done: `validators.py`'s four gates (structural, catalog,
+  overlap, statistical plausibility) run on generate.py's output before anything reaches
+  Unity's import path. Verified against the real corpus (`tests/test_validators.py`, fully
+  runnable now — no torch needed): structural/catalog/plausibility never reject real data (as
+  expected, it's already valid); overlap accepts **676/791 (85.5%)**, consistent with the
+  ~15% of real levels that already have known, tolerated rotated-object corner clipping
+  (see `Doc/LevelCoverage.md`'s warning-not-error philosophy) plus a bit of quantization
+  noise on top.
+  - Two real bugs found by this same test-against-real-data discipline: the overlap SAT
+    check had an inverted epsilon sign that flagged *every touching pair* as overlapping
+    (measured: 788/791 levels — obviously wrong for shipped content); and once fixed,
+    `OVERLAP_EPS` needed widening from 0.05 to 0.15 to absorb the position noise the COORD
+    quantizer itself introduces (two independently-quantized adjacent objects can close a
+    real gap by up to ~0.125 units), or quantization alone pushed the false-positive rate
+    from 15% to 31%.
