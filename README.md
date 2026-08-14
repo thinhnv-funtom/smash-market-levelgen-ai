@@ -18,26 +18,37 @@ data/
     prod13/               # copy of Assets/_Use/Level/prod-13/*.json — frozen, never edit by hand
     manual/               # new hand-authored levels added later
     ai_accepted/          # generated levels that passed validation AND were played + approved
-  manifest.jsonl          # one line per corpus level: {path, source, checkpoint, approved_by, approved_at}
+  manifest.jsonl          # one line per corpus level: {path, source, checkpoint, approved_by,
+                           # approved_at, excluded_reason}
   snapshots/              # frozen dataset_v{N}.jsonl compiled from the manifest at train time
+  scratch/                # generate.py's default --output-dir when called from the Unity tool
 src/levelgenai/
-  export_corpus.py        # copies prod-13 JSON into data/corpus/prod13/ (one-time / on catalog change)
-  manifest.py             # manifest read/write + snapshot compilation
+  export_corpus.py        # copies prod-13 JSON into data/corpus/prod13/, round-trip-excludes mismatches
+  manifest.py             # manifest read/write + snapshot compilation (AI-sourced fraction cap)
   promote.py              # add an approved generated level into data/corpus/ai_accepted/ + manifest
   stats.py                # corpus statistics (object/table/blocker counts, difficulty/moveCount dists)
-  tokenizer.py            # level <-> token sequence (TODO — Phase 1, see smash-market-2/Doc/AILevelGenerator.md)
-  model.py                # transformer definition (TODO — Phase 2)
-  train.py                # training loop (TODO — Phase 2)
-  generate.py             # sampling / inference entry point used by the Unity Editor tool (TODO — Phase 2)
-  validators.py           # structural / catalog / overlap / statistical-plausibility gates (TODO — Phase 3)
+  catalog.py               # loads catalog.json: per-type size variants + mass/friction/bounciness buckets
+  geometry.py              # box/vector math (RESTS_ON inference, rotated extents)
+  tokenizer.py             # level JSON <-> RelationalLevel (Phase 1 — table-first, RESTS_ON, type-conditioned size)
+  roundtrip.py             # Phase 1 round-trip check, used by export_corpus.py's exclusion logic
+  quantize.py              # uniform quantizers for the flat vocabulary's continuous fields
+  vocab.py                 # the flat, finite token vocabulary (built from catalog.json)
+  flatten.py               # RelationalLevel <-> flat integer token ids (Phase 2)
+  flatten_check.py         # Phase 2 round-trip check, also wired into export_corpus.py
+  model.py                 # nanoGPT-style decoder-only transformer
+  train.py                 # training loop — tokenize once, stratified train/val split, AdamW, checkpoint
+  generate.py              # samples from a checkpoint, runs validators.py, used by the Unity Editor tool
+  validators.py            # structural / catalog / overlap / statistical-plausibility gates (Phase 3)
 checkpoints/               # trained model weights (plain git while small; switch to git-lfs if the
-                            # model-size sweep lands on something large — see the plan)
+                            # model-size sweep lands on something large — see below)
+tests/                      # runnable directly, no pytest needed: PYTHONPATH=src python tests/test_*.py
 ```
 
 ## Design decisions (why things look like this)
 
-See `smash-market-2`'s `Doc/AILevelGenerator.md` (once Phase 4 lands) and the planning
-conversation it came from for full context. Summary:
+See `smash-market-2`'s `Doc/AILevelGenerator.md` (the Unity Editor tool this repo's
+`generate.py` is called from) and the planning conversation it came from for full context.
+Summary:
 
 - **v1 scope**: objects + 1–5 tables, **no blockers** (rare in the corpus — 3.7% of levels —
   and only partially wired at runtime today).
@@ -82,6 +93,108 @@ also round-trip-checks every level (`roundtrip.py`) and marks any that don't dec
 exactly with `excluded_reason` in the manifest, so `compile_snapshot` leaves them out of
 training without touching the source file. Currently **209/1000 levels excluded this way**
 — see Status below for why.
+
+## Training
+
+Runs on a separate (e.g. GPU) machine — that's the whole point of this repo being
+independent of the Unity checkout. Nothing here needs Unity or UnityEditor at all, only
+`data/catalog.json` and `data/corpus/` (copy these two over from wherever you exported them,
+or re-export directly if that machine also has network access to pull from the Unity repo).
+
+### 1. Set up the environment
+
+```
+python -m venv .venv
+.venv/bin/activate            # .venv\Scripts\activate on Windows
+pip install -r requirements.txt
+```
+
+`requirements.txt` currently just pins `torch>=2.2` — install the CUDA build that matches
+the machine's driver if you want GPU training (see pytorch.org's install matrix); `train.py`
+auto-detects `cuda` vs `cpu` (`torch.cuda.is_available()`), no flag needed.
+
+### 2. Make sure the data is there
+
+```
+ls data/catalog.json data/corpus/prod13 data/manifest.jsonl
+```
+
+If any are missing, either copy them from a machine that has the Unity checkout, or (if
+this machine *does* have the Unity checkout too):
+
+```
+python -m levelgenai.export_corpus --unity-root /path/to/smash-market-2
+```
+
+### 3. Compile a training snapshot
+
+```
+python -c "
+from pathlib import Path
+from levelgenai.manifest import compile_snapshot
+print(compile_snapshot(Path('.'), Path('data/manifest.jsonl'), Path('data/snapshots')))
+"
+```
+
+Writes `data/snapshots/dataset_v1.jsonl` (or `_v2`, `_v3`, ... if one already exists —
+snapshots are never overwritten, so every training run is tied to a specific, reproducible
+one). Re-run this whenever `data/manifest.jsonl` changes (new hand-authored levels, newly
+promoted generations) to pick up the additions.
+
+### 4. Smoke-test before a real run
+
+Confirm shapes/dtypes/loss all behave on a tiny model and a handful of steps — seconds, not
+minutes, and catches most integration mistakes before they cost GPU time:
+
+```
+python -m levelgenai.train --snapshot data/snapshots/dataset_v1.jsonl \
+    --n-layer 2 --n-head 2 --d-model 32 --batch-size 4 --max-steps 20 --eval-interval 10
+```
+
+Expect `train_loss`/`val_loss` printed every `--eval-interval` steps and both trending down.
+If it crashes, fix that before scaling up — a bug is far cheaper to find here than 15,000
+steps into a real run.
+
+### 5. Train for real
+
+Model size is deliberately not defaulted for you (see `model.py`'s docstring: compute isn't
+the bottleneck here, the ~791-level dataset is) — sweep a couple of sizes and compare
+`val_loss`, don't just pick one and trust it:
+
+```
+python -m levelgenai.train --snapshot data/snapshots/dataset_v1.jsonl \
+    --n-layer 6 --n-head 6 --d-model 192 --batch-size 16 --max-steps 20000 --eval-interval 500
+```
+
+- Prints `train_loss`/`val_loss` every `--eval-interval` steps; only saves a checkpoint when
+  `val_loss` improves, so `checkpoints/best.pt` is always the best-seen, not just the latest.
+- `--lr` (default `3e-4`), `--val-fraction` (default `0.1`, stratified by difficulty — see
+  `stratified_split`), `--seed` are also CLI flags if the defaults need adjusting.
+- Watch for `val_loss` climbing back up while `train_loss` keeps falling — classic
+  overfitting on a small dataset. If that happens fast, prefer a *smaller* model or more
+  dropout (`--dropout`, default `0.1`) over a bigger one; see `model.py`'s docstring on why
+  more parameters isn't automatically better here.
+- There's no early stopping — `--max-steps` runs to completion regardless. Watch the log and
+  Ctrl-C once `val_loss` has clearly stopped improving; `checkpoints/best.pt` already has the
+  best checkpoint saved, so stopping early loses nothing.
+
+### 6. Try generating from the checkpoint
+
+Before wiring it into the Unity tool, confirm it produces *something* parseable:
+
+```
+python -m levelgenai.generate --checkpoint checkpoints/best.pt \
+    --snapshot data/snapshots/dataset_v1.jsonl \
+    --difficulty 0 --object-count-bucket 2 --move-count 24 --num-samples 8 \
+    --output-dir data/scratch/manual_test
+cat data/scratch/manual_test/summary.json
+```
+
+Early in training, expect a low accept rate (or 0) — the model hasn't learned the grammar
+yet. A rising accept rate over successive checkpoints is a much more meaningful progress
+signal than loss alone, since loss doesn't distinguish "nearly right" from "structurally
+broken." Once this looks reasonable, point `Tools > Smash Market > AI Level Generator` at
+the same `--checkpoint` path from Unity — see `Doc/AILevelGenerator.md` in the main repo.
 
 ## Status
 
