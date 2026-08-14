@@ -417,8 +417,15 @@ token = getpass("GitHub token: ")
       idempotent-by-path and will never re-check an already-recorded level on its own.
     - **Vocab size changed (950 -> 1014 tokens) — any existing checkpoint is now
       incompatible and must be retrained from scratch.** Token ids shifted, so loading an old
-      checkpoint against the new vocab would silently mismatch embeddings, not just fail to
-      load.
+      checkpoint against the new vocab silently mismatched embeddings instead of failing to
+      load — confirmed the hard way (an old checkpoint run through the Unity tool surfaced as a
+      cryptic `structural: AssertionError: expected <QUAT_*>, got <DIM_32>`, not an obvious
+      "wrong vocab" message). Fixed going forward: `Vocab.fingerprint()` hashes the exact token
+      layout, `train.py` stamps it into every checkpoint, and `generate.py`/`train.py --resume`
+      both check it before touching the model — a missing fingerprint (every checkpoint saved
+      before this existed) counts as unsafe too, not exempt, since that's exactly what every
+      currently-existing checkpoint actually is. A vocab mismatch now fails immediately with an
+      actionable message instead of that deep, cryptic one.
 - **Phase 2 (model half)** — `model.py` (nanoGPT-style decoder-only transformer),
   `train.py` (loads a snapshot, tokenizes once, stratified train/val split by difficulty,
   dynamic per-batch padding, AdamW, checkpoints on best val loss) and `generate.py`

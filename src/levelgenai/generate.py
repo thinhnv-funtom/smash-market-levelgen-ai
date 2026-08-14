@@ -37,8 +37,23 @@ from levelgenai.vocab import Vocab
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
 
-def load_model(checkpoint_path: Path, device: str) -> GPT:
+def load_model(checkpoint_path: Path, device: str, vocab: Vocab) -> GPT:
     checkpoint = torch.load(checkpoint_path, map_location=device, weights_only=False)
+    saved_fingerprint = checkpoint.get("vocab_fingerprint")
+    current_fingerprint = vocab.fingerprint()
+    # A MISSING fingerprint means this checkpoint predates this check — treated as unsafe, not
+    # exempt: every checkpoint in existence right now predates it, and every one of them was in
+    # fact trained against the pre-OFFSET-fix 950-token vocab, not today's 1014-token one. This
+    # is what turns that into an immediate, actionable error instead of a cryptic structural
+    # AssertionError deep in flatten.py's reader once sampling actually runs.
+    if saved_fingerprint != current_fingerprint:
+        raise RuntimeError(
+            f"{checkpoint_path} was trained against a different (or unrecorded, i.e. older) "
+            f"token vocabulary (fingerprint {saved_fingerprint!r} vs current "
+            f"{current_fingerprint!r}) — its output would decode as garbage against today's "
+            f"vocab.py/quantize.py (e.g. after the anchor-relative OFFSET fix bumped vocab size "
+            f"950 -> 1014). Retrain from scratch; there's no way to reuse a checkpoint across a "
+            f"vocab change.")
     model = GPT(checkpoint["cfg"]).to(device)
     model.load_state_dict(checkpoint["model"])
     model.eval()
@@ -78,7 +93,7 @@ def main() -> None:
     catalog = load_catalog(args.catalog)
     vocab = Vocab(catalog)
     stats = StatsProfile.from_snapshot(args.snapshot)
-    model = load_model(args.checkpoint, device)
+    model = load_model(args.checkpoint, device, vocab)
 
     rows = sample_token_rows(model, vocab, args.difficulty, args.object_count_bucket,
                               args.move_count, args.num_samples, args.temperature, args.top_k, device)

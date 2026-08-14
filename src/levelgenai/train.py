@@ -140,6 +140,13 @@ def main() -> None:
     best_val = float("inf")
     if args.resume is not None:
         checkpoint = torch.load(args.resume, map_location=device, weights_only=False)
+        saved_fingerprint = checkpoint.get("vocab_fingerprint")  # missing = predates this check = unsafe, not exempt
+        if saved_fingerprint != vocab.fingerprint():
+            raise RuntimeError(
+                f"{args.resume} was trained against a different (or unrecorded, i.e. older) "
+                f"token vocabulary than the current catalog.json/vocab.py/quantize.py produces "
+                f"— resuming would keep training embeddings for the wrong tokens. Start a fresh "
+                f"run instead.")
         cfg = checkpoint["cfg"]  # the saved architecture wins — --n-layer etc. can't change mid-run
         model = GPT(cfg).to(device)
         model.load_state_dict(checkpoint["model"])
@@ -170,7 +177,8 @@ def main() -> None:
             best_val = min(best_val, val_loss)
 
             checkpoint = {"cfg": cfg, "model": model.state_dict(), "optimizer": optimizer.state_dict(),
-                          "step": step, "val_loss": val_loss, "best_val": best_val}
+                          "step": step, "val_loss": val_loss, "best_val": best_val,
+                          "vocab_fingerprint": vocab.fingerprint()}
             torch.save(checkpoint, args.checkpoint_dir / "last.pt")  # always — see --resume
             if val_loss == best_val:
                 torch.save(checkpoint, args.checkpoint_dir / "best.pt")  # only on improvement — see generate.py

@@ -10,6 +10,8 @@ vocabulary, not one that silently shifts if the corpus changes.
 
 from __future__ import annotations
 
+import hashlib
+
 from levelgenai.catalog import Catalog
 from levelgenai.quantize import COORD, DIM, MOVE_RANGE, MOVE_SPEED, OFFSET, QUAT, ROT_SPEED, YAW
 
@@ -57,6 +59,20 @@ class Vocab:
 
     def __len__(self) -> int:
         return len(self._tokens)
+
+    def fingerprint(self) -> str:
+        """Identifies this exact token layout (order + contents), not just its
+        size — a checkpoint trained against a different vocab.py/quantize.py
+        (e.g. before the anchor-relative OFFSET fix bumped 950 -> 1014 tokens)
+        has every token id shifted, so its output decodes as garbage against
+        today's vocab: not a crash, just a wrong-but-plausible-looking token
+        at some position, surfacing later as a confusing structural
+        AssertionError deep in flatten.py's reader. train.py saves this in
+        every checkpoint; generate.py checks it before ever touching the
+        model, so a vocab mismatch fails fast with an actionable message
+        instead of that deep, cryptic one.
+        """
+        return hashlib.sha256("\n".join(self._tokens).encode()).hexdigest()[:16]
 
     def id(self, token: str) -> int:
         return self._index[token]
